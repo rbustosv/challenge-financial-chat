@@ -8,6 +8,7 @@
 <h1>Get started!</h1>
 
 <form action="{{ url_for('registration')}}", method="POST">
+    <!--registration method declared in application.py-->
     
     {{ displayField(form.username, 'Username', autocomplete="off", autofocus= true)}}
     {{ displayField(form.password, 'Password')}}
