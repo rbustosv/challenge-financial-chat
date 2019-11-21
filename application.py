@@ -18,13 +18,8 @@ def registration():
     user_form = userForm()
     if user_form.validate_on_submit():
         #reading user credentials
-        username = user_form.name.data
+        username = user_form.username.data
         password = user_form.password.data
-
-        #validating username
-        user_object = User.query.filter_by(username=username).first()
-        if user_object:
-            return "Username already taken. Please try with a different one"
 
         #creating user
         user = User(username=username, password=password)
