@@ -11,6 +11,7 @@ def registration():
     user_form = userForm()
     if user_form.validate_on_submit():
         return "Great success!"
+        
     return render_template("index.html", form=user_form)
 
 if __name__ == "__main__":
