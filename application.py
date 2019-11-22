@@ -1,5 +1,7 @@
+from time import localtime, strftime
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from registration_form import *
 from models import *
@@ -12,6 +14,11 @@ app.secret_key = 'replace later'
 app.config['SQLALCHEMY_DATABASE_URI'] ='postgres://qmatonjvzodehx:32e081e14a510c99955ee0ee9022fa4e7e231d61fb67652e01e4e7d0c4967523@ec2-174-129-214-42.compute-1.amazonaws.com:5432/d4chmbbe0pv6cj'
 db = SQLAlchemy(app)
 
+#Initializing Flask-SocketIO
+socketio = SocketIO(app)
+
+#predefined rooms
+ROOMS = ["general", "dancers", "readers"]
 
 # configuring flask login
 login = LoginManager(app)
@@ -63,11 +70,12 @@ def login():
 @app.route("/chat", methods=['GET','POST'])
 #@login_required
 def chat():
-    if not current_user.is_authenticated:
-        flash('Please login.','danger')
-        return redirect(url_for('login'))
+    #if not current_user.is_authenticated:
+        #flash('Please login.','danger')
+        #return redirect(url_for('login'))
     
-    return "Chat with me"
+    return render_template('chat.html', username=current_user.username,
+    rooms=ROOMS)
     
 @app.route("/logout",  methods=['GET'])
 def logout():
@@ -76,6 +84,23 @@ def logout():
     flash('You have logged out successfully', 'success')
     return redirect(url_for('login'))
 
+@socketio.on('message')
+def message(data):
+    print(f"\n\n{data}\n\n")
+    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': 
+        strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+
+@socketio.on('join')     
+def join(data):
+    join_room(data['room'])
+    send({'msg': data['username'] + "has joined the " + data['room'] + "room."}, room=data['room'])
+
+@socketio.on('leave')     
+def leave(data):
+    leave_room(data['room'])
+    send({'msg': data['username'] + "has left the " + data['room'] + "room."}, room=data['room'])
+
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
