@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for
 
+
 from registration_form import *
 from models import *
 
@@ -21,8 +22,10 @@ def registration():
         username = user_form.username.data
         password = user_form.password.data
 
+        hashed_psswd = pbkdf2_sha256.hash(password)
+
         #creating user
-        user = User(username=username, password=password)
+        user = User(username=username, password=hashed_psswd)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('login'))
