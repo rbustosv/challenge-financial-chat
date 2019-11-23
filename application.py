@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] ='postgres://qmatonjvzodehx:32e081e14a510c
 db = SQLAlchemy(app)
 
 #Initializing Flask-SocketIO
-socketio = SocketIO(app)
+socketio = SocketIO(app, manage_session=False)
 
 #predefined rooms
 ROOMS = ["general", "dancers", "readers"]
@@ -86,21 +86,28 @@ def logout():
 
 @socketio.on('message')
 def message(data):
-    print(f"\n\n{data}\n\n")
-    send({'msg': data['msg'], 'username': data['username'], 'time_stamp': 
-        strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+    #print(f"\n\n{data}\n\n")
+    msg = data['msg']
+    username = data['username']
+    room = data['room']
+    time_stamp = strftime('%b-%d %I:%M%p', localtime())
+    send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
+    
 
 @socketio.on('join')     
 def join(data):
-    join_room(data['room'])
-    send({'msg': data['username'] + "has joined the " + data['room'] + "room."}, room=data['room'])
+    username = data["username"]
+    room = data["room"]
+    join_room(room)
+    send({"msg": username + " has joined the " + room + " room."}, room=room)
 
 @socketio.on('leave')     
 def leave(data):
-    leave_room(data['room'])
-    send({'msg': data['username'] + "has left the " + data['room'] + "room."}, room=data['room'])
-
-
+    username = data['username']
+    room = data['room']
+    leave_room(room)
+    send({"msg": username + " has left the room"}, room=room)
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    #socketio.run(app, debug=True)
+    app.run(debug=True)

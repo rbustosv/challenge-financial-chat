@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    var socket = io();
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+    const username = document.querySelector('#get-username').innerHTML;
 
     let room = "general";
     joinRoom("general");
@@ -9,11 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('message', data => {
+        //console.log(`socketio hora: ${data.time_stamp}`)
         const p = document.createElement('p');
         const span_username = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
-
+        p.innerHTML = data;
         if (data.username) {
             span_username.innerHTML = data.username;
             span_timestamp.innerHTML = data.time_stamp;
@@ -35,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //room selection
-    document.querySelectorAll('select-room').forEach(p => {
+    document.querySelectorAll('.select-room').forEach(p => {
         p.onclick = () => {
             let newRoom = p.innerHTML;
             if (newRoom == room) {
@@ -47,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 room = newRoom;
 
             }
-        }
-    })
+        };
+    });
 
     //leaving room
     function leaveRoom(room) {
@@ -69,6 +72,4 @@ document.addEventListener('DOMContentLoaded', () => {
         p.innerHTML = msg;
         document.querySelector('#display-message-section').append(p);
     }
-
-
 })

@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Document</title>  
 </head>
 <body>
     <nav>
@@ -29,14 +29,21 @@
 
         </div>
     </div>
+    
+    <span id="get-username">{{ username }}</span>
+
 
     <script type="text/javascript">
         const username = `{{ username|e }}`;//escaping special characters
     </script>
-    <script src="{{url_for('static', filename='scripts/chat.js')}}">
+
+    <script src="{{ url_for('static', filename='scripts/chat.js') }}">
+    </script>  
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous">
     </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', filename='scripts/socketio.js')}}">
+    
+    <script src="{{ url_for('static', filename='scripts/socketio.js') }}">
     </script>
 </body>
 </html>
