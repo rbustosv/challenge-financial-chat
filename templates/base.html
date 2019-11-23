@@ -25,10 +25,10 @@
             <div id="righthand-side">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages  %} <!--validating tuple is not empty-->
-                        <!--tuple messages: ('category', 'message')-->
-                        Category: {{ messages[0][0] }}
-                        {{ messages[0][1] }}
-
+                        <div class="alert alert-{{ messages[0][0] }} " role="alert">
+                            {{ messages[0][1] }}
+                        </div>
+                        <hr>
                     {% endif %}
                 {% endwith %}
 

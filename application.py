@@ -1,3 +1,4 @@
+import os
 from time import localtime, strftime
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
@@ -8,10 +9,10 @@ from models import *
 
 #Configuring app
 app = Flask(__name__)
-app.secret_key = 'replace later'
+app.secret_key = os.environ.get('SECRET')
 
 #configuring database
-app.config['SQLALCHEMY_DATABASE_URI'] ='postgres://qmatonjvzodehx:32e081e14a510c99955ee0ee9022fa4e7e231d61fb67652e01e4e7d0c4967523@ec2-174-129-214-42.compute-1.amazonaws.com:5432/d4chmbbe0pv6cj'
+app.config['SQLALCHEMY_DATABASE_URI'] =os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 #Initializing Flask-SocketIO
@@ -70,9 +71,9 @@ def login():
 @app.route("/chat", methods=['GET','POST'])
 #@login_required
 def chat():
-    #if not current_user.is_authenticated:
-        #flash('Please login.','danger')
-        #return redirect(url_for('login'))
+    if not current_user.is_authenticated:
+        flash('Please login.','danger')
+        return redirect(url_for('login'))
     
     return render_template('chat.html', username=current_user.username,
     rooms=ROOMS)
