@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     socket.on('message', data => {
-        //console.log(`socketio hora: ${data.time_stamp}`)
         const p = document.createElement('p');
         const span_username = document.createElement('span');
         const span_timestamp = document.createElement('span');
